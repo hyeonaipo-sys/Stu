@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>StudyVault</title>
+<title>Notex</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{--text:#1a1d2e;--text2:#7880a0;--text3:#b0b8d0;--accent:#5b7fff;--danger:#f87171;--radius:20px;--radius-sm:14px;}
@@ -242,7 +242,7 @@ flex-shrink:0;
   <!-- SIDEBAR -->
 
   <aside>
-    <div class="logo">Study<em>Vault</em></div>
+    <div class="logo">Note<em>x</em></div>
     <div class="sidebar-label">내 폴더</div>
     <div id="folder-list"></div>
     <button class="add-folder-btn" onclick="openFolderModal()">＋ 새 폴더</button>
@@ -414,6 +414,10 @@ function ctxDelete(){
 // ── FOLDERS ──
 function renderFolders(){
   const el=document.getElementById('folder-list'); el.innerHTML='';
+  if(state.folders.length===0){
+    el.innerHTML='<div style="font-size:0.78rem;color:var(--text3);padding:8px 10px;font-weight:600;line-height:1.6;">아직 폴더가 없어요.<br>아래 버튼으로 추가하세요!</div>';
+    return;
+  }
   state.folders.forEach(f=>{
     const d=document.createElement('div');
     d.className='folder-item'+(f.id===selFolderId?' active':'');
@@ -421,6 +425,13 @@ function renderFolders(){
       <div class="folder-info"><div class="folder-name">${f.name}</div><div class="folder-sub">${f.notes.length}개 노트</div></div>
       <div class="folder-badge">${f.notes.length}</div>`;
     d.onclick=()=>selectFolder(f.id);
+    // 우클릭
+    d.addEventListener('contextmenu', e=>openCtxMenu(e, f.id));
+    // 꾹 누르기 (모바일)
+    let pressTimer;
+    d.addEventListener('touchstart',()=>{ pressTimer=setTimeout(()=>{ const fakeE={preventDefault:()=>{},stopPropagation:()=>{},clientX:d.getBoundingClientRect().right,clientY:d.getBoundingClientRect().top}; openCtxMenu(fakeE,f.id); },600); });
+    d.addEventListener('touchend',()=>clearTimeout(pressTimer));
+    d.addEventListener('touchmove',()=>clearTimeout(pressTimer));
     el.appendChild(d);
   });
 }
@@ -732,6 +743,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('chat-input').addEventListener('input',function(){
     this.style.height='auto'; this.style.height=this.scrollHeight+'px';
   });
+  document.addEventListener('click', ()=>closeCtxMenu());
   document.addEventListener('keydown',e=>{
     if((e.ctrlKey||e.metaKey)&&e.key==='s'){ e.preventDefault(); saveNote(); }
   });
