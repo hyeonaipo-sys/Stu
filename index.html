@@ -12,21 +12,35 @@
 body{font-family:'Nunito',sans-serif;background:linear-gradient(135deg,#c8d9ff 0%,#dce8ff 35%,#ede8ff 65%,#d8eeff 100%);min-height:100vh;color:var(--text);overflow-x:auto;overflow-y:hidden;}
 body::before{content:'';position:fixed;width:600px;height:600px;border-radius:50%;filter:blur(90px);opacity:0.4;pointer-events:none;z-index:0;background:radial-gradient(circle,#a5c0ff,transparent);top:-150px;left:-150px;}
 body::after{content:'';position:fixed;width:500px;height:500px;border-radius:50%;filter:blur(90px);opacity:0.4;pointer-events:none;z-index:0;background:radial-gradient(circle,#c4b5fd,transparent);bottom:-100px;right:-100px;}
-.app{display:flex;height:100vh;position:relative;z-index:1;min-width:max-content;}
 
-/* SIDEBAR */
-/* TOGGLE */
-aside{width:235px;min-width:235px;padding:24px 16px;display:flex;flex-direction:column;gap:4px;border-right:1px solid rgba(255,255,255,0.6);backdrop-filter:blur(24px);background:rgba(255,255,255,0.28);transition:width 0.25s ease, min-width 0.25s ease, padding 0.25s ease, opacity 0.25s ease;}
-aside.hidden{width:0;min-width:0;padding:0;opacity:0;overflow:hidden;border:none;}
-.note-list{width:290px;min-width:290px;padding:20px 14px;display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,0.5);backdrop-filter:blur(12px);background:rgba(255,255,255,0.18);overflow:hidden;transition:width 0.25s ease, min-width 0.25s ease, padding 0.25s ease, opacity 0.25s ease;}
-.note-list.hidden{width:0;min-width:0;padding:0;opacity:0;overflow:hidden;border:none;}
+/* TOP LOGO BAR */
+.top-logo{
+position:fixed;top:0;left:0;right:0;height:48px;
+display:flex;align-items:center;justify-content:center;
+z-index:100;pointer-events:none;
+}
+.top-logo span{
+font-size:1.15rem;font-weight:900;letter-spacing:-0.03em;color:var(–text);
+pointer-events:none;
+}
+.top-logo span em{font-style:normal;background:linear-gradient(135deg,#5b7fff,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 
-/* TOGGLE BUTTONS — floating top-left */
-.panel-toggles{position:fixed;top:16px;left:16px;z-index:500;display:flex;gap:6px;}
+/* ? BUTTON TOP RIGHT */
+.help-btn-fixed{position:fixed;top:8px;right:14px;z-index:200;}
+.help-btn{width:32px;height:32px;border-radius:50%;border:1.5px solid rgba(91,127,255,0.25);background:rgba(255,255,255,0.6);backdrop-filter:blur(10px);color:var(–accent);font-size:0.9rem;font-family:‘Nunito’,sans-serif;font-weight:900;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;}
+.help-btn:hover{background:var(–accent);color:white;border-color:var(–accent);}
+
+/* FLOATING TOGGLES — left side below logo */
+.panel-toggles{position:fixed;top:56px;left:10px;z-index:500;display:flex;gap:6px;}
 .toggle-btn{width:34px;height:34px;border-radius:10px;border:1.5px solid rgba(255,255,255,0.8);background:rgba(255,255,255,0.7);backdrop-filter:blur(16px);color:var(–text2);font-size:0.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;box-shadow:0 2px 10px rgba(0,0,0,0.08);}
 .toggle-btn:hover{background:rgba(255,255,255,0.95);color:var(–accent);}
 .toggle-btn.active{background:var(–accent);color:white;border-color:var(–accent);}
-.logo em{font-style:normal;background:linear-gradient(135deg,#5b7fff,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+
+.app{display:flex;height:100vh;padding-top:48px;position:relative;z-index:1;min-width:max-content;}
+
+/* SIDEBAR */
+aside{width:235px;min-width:235px;padding:20px 16px;display:flex;flex-direction:column;gap:4px;border-right:1px solid rgba(255,255,255,0.6);backdrop-filter:blur(24px);background:rgba(255,255,255,0.28);transition:width 0.25s ease,min-width 0.25s ease,padding 0.25s ease,opacity 0.25s ease;}
+aside.hidden{width:0;min-width:0;padding:0;opacity:0;overflow:hidden;border:none;}
 .sidebar-label{font-size:0.67rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(–text3);padding:4px 10px;margin-top:6px;}
 .folder-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(–radius-sm);cursor:pointer;transition:all 0.18s;}
 .folder-item:hover{background:rgba(255,255,255,0.5);}
@@ -41,8 +55,6 @@ aside.hidden{width:0;min-width:0;padding:0;opacity:0;overflow:hidden;border:none
 .sidebar-footer{margin-top:auto;padding:14px;border-radius:var(–radius-sm);background:rgba(255,255,255,0.4);}
 .stat-row{display:flex;justify-content:space-between;font-size:0.75rem;color:var(–text2);padding:3px 0;}
 .stat-row strong{font-family:‘DM Mono’,monospace;color:var(–text);font-weight:700;}
-.help-btn{width:32px;height:32px;border-radius:50%;border:1.5px solid rgba(91,127,255,0.25);background:rgba(255,255,255,0.5);color:var(–accent);font-size:0.9rem;font-family:‘Nunito’,sans-serif;font-weight:900;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;margin-top:10px;align-self:center;}
-.help-btn:hover{background:var(–accent);color:white;border-color:var(–accent);box-shadow:0 4px 12px rgba(91,127,255,0.3);}
 
 /* NOTE LIST */
 .note-list{width:290px;min-width:290px;padding:20px 14px;display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,0.5);backdrop-filter:blur(12px);background:rgba(255,255,255,0.18);overflow:hidden;transition:width 0.25s ease,min-width 0.25s ease,padding 0.25s ease,opacity 0.25s ease;}
@@ -75,10 +87,7 @@ aside.hidden{width:0;min-width:0;padding:0;opacity:0;overflow:hidden;border:none
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 .empty-state h3{font-size:1.15rem;font-weight:800;color:var(–text);}
 .empty-state p{font-size:0.87rem;line-height:1.75;font-weight:500;}
-
 #editor{display:none;flex-direction:column;flex:1;overflow:hidden;border-radius:20px;box-shadow:0 8px 40px rgba(80,100,180,0.15);}
-
-/* EDITOR TOPBAR */
 .editor-topbar{display:flex;align-items:center;padding:12px 20px;border-bottom:1px solid rgba(0,0,0,0.06);gap:10px;background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);border-radius:20px 20px 0 0;flex-shrink:0;}
 .breadcrumb{font-size:0.78rem;font-weight:700;color:var(–text3);}
 .note-title-bar{font-size:0.95rem;font-weight:800;color:var(–text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:none;border:none;outline:none;font-family:‘Nunito’,sans-serif;cursor:text;border-bottom:1.5px solid transparent;transition:border-color 0.15s;min-width:0;}
@@ -88,71 +97,22 @@ aside.hidden{width:0;min-width:0;padding:0;opacity:0;overflow:hidden;border:none
 .icon-btn:hover{background:rgba(0,0,0,0.06);}
 .icon-btn.del:hover{background:rgba(248,113,113,0.1);border-color:rgba(248,113,113,0.4);}
 .icon-btn.save:hover{background:rgba(91,127,255,0.1);border-color:rgba(91,127,255,0.4);}
-
-/* PAGES SCROLL AREA — GoodNotes style */
 .pages-scroll{flex:1;overflow-y:auto;background:#e8eaf0;padding:20px;display:flex;flex-direction:column;gap:16px;}
 .pages-scroll::-webkit-scrollbar{width:6px;}
 .pages-scroll::-webkit-scrollbar-thumb{background:rgba(91,127,255,0.2);border-radius:4px;}
-
-/* EACH PAGE = A4 white card */
-.page-block{
-background:#fff;
-border-radius:4px;
-box-shadow:0 2px 12px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.06);
-padding:32px 36px;
-min-height:500px;
-display:flex;
-flex-direction:column;
-gap:12px;
-position:relative;
-flex-shrink:0;
-}
-.page-number{
-position:absolute;
-bottom:14px;right:20px;
-font-size:0.7rem;
-font-family:‘DM Mono’,monospace;
-color:var(–text3);
-}
-.page-del-btn{
-position:absolute;
-top:12px;right:12px;
-width:24px;height:24px;border-radius:8px;
-background:rgba(0,0,0,0.04);border:none;
-color:var(–text3);font-size:0.75rem;
-cursor:pointer;display:flex;align-items:center;justify-content:center;
-opacity:0;transition:all 0.15s;
-}
+.page-block{background:#fff;border-radius:4px;box-shadow:0 2px 12px rgba(0,0,0,0.1),0 1px 3px rgba(0,0,0,0.06);padding:32px 36px;min-height:500px;display:flex;flex-direction:column;gap:12px;position:relative;flex-shrink:0;}
+.page-number{position:absolute;bottom:14px;right:20px;font-size:0.7rem;font-family:‘DM Mono’,monospace;color:var(–text3);}
+.page-del-btn{position:absolute;top:12px;right:12px;width:24px;height:24px;border-radius:8px;background:rgba(0,0,0,0.04);border:none;color:var(–text3);font-size:0.75rem;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:all 0.15s;}
 .page-block:hover .page-del-btn{opacity:1;}
 .page-del-btn:hover{background:rgba(248,113,113,0.12);color:var(–danger);}
-
 .page-images{display:flex;flex-wrap:wrap;gap:10px;}
 .note-img-wrap{position:relative;border-radius:10px;overflow:hidden;border:1.5px solid rgba(0,0,0,0.06);max-width:220px;}
 .note-img-wrap img{display:block;width:100%;max-width:220px;}
-.note-img-del{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,0.45);color:white;font-size:0.7rem;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.1s;}
+.note-img-del{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,0.45);color:white;font-size:0.7rem;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .note-img-del:hover{background:var(–danger);}
-
-.page-textarea{
-flex:1;
-width:100%;
-min-height:420px;
-background:none;border:none;
-color:var(–text);font-size:0.97rem;line-height:1.85;
-font-family:‘Nunito’,sans-serif;font-weight:500;
-resize:none;outline:none;
-}
+.page-textarea{flex:1;width:100%;min-height:420px;background:none;border:none;color:var(–text);font-size:0.97rem;line-height:1.85;font-family:‘Nunito’,sans-serif;font-weight:500;resize:none;outline:none;}
 .page-textarea::placeholder{color:rgba(120,128,160,0.3);}
-
-/* ADD PAGE + PHOTO TOOLBAR */
-.editor-bottombar{
-display:flex;align-items:center;gap:10px;
-padding:10px 20px;
-background:rgba(255,255,255,0.92);
-backdrop-filter:blur(20px);
-border-top:1px solid rgba(0,0,0,0.06);
-border-radius:0 0 20px 20px;
-flex-shrink:0;
-}
+.editor-bottombar{display:flex;align-items:center;gap:10px;padding:10px 20px;background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);border-top:1px solid rgba(0,0,0,0.06);border-radius:0 0 20px 20px;flex-shrink:0;}
 .bottom-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:10px;border:1.5px solid rgba(0,0,0,0.08);background:rgba(0,0,0,0.02);color:var(–text2);font-size:0.8rem;font-weight:700;font-family:‘Nunito’,sans-serif;cursor:pointer;transition:all 0.15s;}
 .bottom-btn:hover{border-color:var(–accent);color:var(–accent);background:rgba(91,127,255,0.05);}
 .bottom-btn.primary{background:var(–accent);color:white;border-color:var(–accent);box-shadow:0 4px 12px rgba(91,127,255,0.3);}
@@ -216,15 +176,12 @@ flex-shrink:0;
 .btn-cancel:hover{background:rgba(0,0,0,0.1);}
 .btn-confirm{background:linear-gradient(135deg,#5b7fff,#7c6fef);color:white;box-shadow:0 4px 14px rgba(91,127,255,0.32);}
 .btn-confirm:hover{transform:translateY(-1px);}
-
-/* HELP */
 .help-card{width:440px;max-width:90vw;max-height:85vh;overflow-y:auto;}
 .help-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;}
 .help-card-header h3{font-size:1.15rem;font-weight:900;}
 .help-close{width:30px;height:30px;border-radius:8px;border:none;background:rgba(0,0,0,0.06);color:var(–text2);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .help-close:hover{background:rgba(248,113,113,0.12);color:var(–danger);}
 .help-section{margin-bottom:22px;}
-.help-section h4{font-size:0.72rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(–text3);margin-bottom:10px;}
 .help-step{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px;}
 .help-step-num{width:24px;height:24px;border-radius:8px;flex-shrink:0;background:linear-gradient(135deg,#5b7fff,#a78bfa);color:white;font-size:0.72rem;font-weight:800;display:flex;align-items:center;justify-content:center;}
 .help-step-text{font-size:0.83rem;font-weight:600;line-height:1.6;color:var(–text2);}
@@ -233,33 +190,36 @@ flex-shrink:0;
 .help-link:hover{opacity:0.88;}
 .help-divider{height:1px;background:rgba(0,0,0,0.06);margin:18px 0;}
 .help-tip{display:flex;gap:10px;padding:12px 14px;border-radius:12px;background:rgba(91,127,255,0.06);border:1px solid rgba(91,127,255,0.12);font-size:0.8rem;font-weight:600;color:var(–text2);line-height:1.6;}
-
-/* CONTEXT MENU */
 .ctx-menu{position:fixed;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border:1.5px solid rgba(255,255,255,0.95);border-radius:14px;padding:6px;box-shadow:0 8px 30px rgba(80,100,180,0.2);z-index:9999;min-width:140px;display:none;}
 .ctx-menu.open{display:block;}
 .ctx-item{display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:9px;font-size:0.82rem;font-weight:700;cursor:pointer;color:var(–text2);transition:all 0.12s;font-family:‘Nunito’,sans-serif;}
 .ctx-item:hover{background:rgba(91,127,255,0.08);color:var(–accent);}
 .ctx-item.danger:hover{background:rgba(248,113,113,0.08);color:var(–danger);}
 .ctx-divider{height:1px;background:rgba(0,0,0,0.06);margin:4px 0;}
-
-/* TOAST */
 .toast{position:fixed;bottom:28px;right:28px;background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);border:1.5px solid rgba(255,255,255,0.95);border-radius:14px;padding:10px 18px;font-size:0.82rem;font-weight:700;color:var(–accent);display:flex;align-items:center;gap:8px;box-shadow:0 8px 30px rgba(91,127,255,0.18);transform:translateY(16px);opacity:0;transition:all 0.25s;z-index:200;}
 .toast.show{opacity:1;transform:translateY(0);}
 </style>
 
 </head>
 <body>
+
+<!-- 상단 로고 정중앙 -->
+
+<div class="top-logo"><span>Note<em>x</em></span></div>
+
+<!-- ? 버튼 우상단 -->
+
+<div class="help-btn-fixed"><button class="help-btn" onclick="toggleHelp()">?</button></div>
+
+<!-- 토글 버튼 좌상단 플로팅 -->
+
 <div class="panel-toggles">
   <button class="toggle-btn active" id="toggle-sidebar" onclick="toggleSidebar()" title="폴더 패널">☰</button>
   <button class="toggle-btn active" id="toggle-notelist" onclick="toggleNoteList()" title="노트 목록">📋</button>
 </div>
 
 <div class="app">
-
-  <!-- SIDEBAR -->
-
   <aside>
-    <div class="logo">Note<em>x</em></div>
     <div class="sidebar-label">내 폴더</div>
     <div id="folder-list"></div>
     <button class="add-folder-btn" onclick="openFolderModal()">＋ 새 폴더</button>
@@ -267,11 +227,8 @@ flex-shrink:0;
       <div class="stat-row">전체 노트 <strong id="stat-total">0</strong></div>
       <div class="stat-row">폴더 수 <strong id="stat-folders">0</strong></div>
       <div class="stat-row">오늘 작성 <strong id="stat-today">0</strong></div>
-      <button class="help-btn" onclick="toggleHelp()">?</button>
     </div>
   </aside>
-
-  <!-- NOTE LIST -->
 
   <div class="note-list">
     <div class="note-list-header">
@@ -288,8 +245,6 @@ flex-shrink:0;
     </div>
   </div>
 
-  <!-- EDITOR -->
-
   <div class="editor-area">
     <div class="empty-state" id="empty-state">
       <div class="big-icon">✏️</div>
@@ -303,7 +258,6 @@ flex-shrink:0;
         <button class="icon-btn save" onclick="saveNote()" title="저장 (Ctrl+S)">💾</button>
         <button class="icon-btn del" onclick="deleteNote()" title="삭제">🗑</button>
       </div>
-      <!-- GoodNotes-style scrollable pages -->
       <div class="pages-scroll" id="pages-scroll"></div>
       <div class="editor-bottombar">
         <button class="bottom-btn primary" onclick="addPage()">＋ 페이지 추가</button>
@@ -313,8 +267,6 @@ flex-shrink:0;
       </div>
     </div>
   </div>
-
-  <!-- AI PANEL -->
 
   <div class="ai-panel">
     <div class="ai-panel-header">
@@ -338,8 +290,6 @@ flex-shrink:0;
   </div>
 </div>
 
-<!-- FOLDER MODAL -->
-
 <div class="modal-overlay" id="folder-modal">
   <div class="modal">
     <h3>새 폴더 만들기</h3>
@@ -355,8 +305,6 @@ flex-shrink:0;
     </div>
   </div>
 </div>
-
-<!-- HELP -->
 
 <div class="help-overlay" id="help-overlay" onclick="closeHelp(event)">
   <div class="help-card">
@@ -388,63 +336,55 @@ flex-shrink:0;
 const EMOJIS=['📚','📝','✏️','🎯','💡','🔤','🗣️','👂','✍️','📖','🧠','⭐','🔥','💎','🌟'];
 const COLORS=['#5b7fff','#a78bfa','#38bdf8','#34d399','#fbbf24','#f87171','#fb923c','#e879f9'];
 
-let state = JSON.parse(localStorage.getItem('sv5')||'null') || {
-  folders:[]
-};
-let selFolderId=null, selNoteId=null;
-let selEmoji=EMOJIS[0], selColor=COLORS[0];
-let searchQ='', saveT=null;
-let focusedPageIdx=0;
-let chatHistory=[], geminiKey=localStorage.getItem('gemini_key')||'';
+let state=JSON.parse(localStorage.getItem('sv5')||'null')||{folders:[]};
+let selFolderId=null,selNoteId=null;
+let selEmoji=EMOJIS[0],selColor=COLORS[0];
+let searchQ='',saveT=null,focusedPageIdx=0;
+let chatHistory=[],geminiKey=localStorage.getItem('gemini_key')||'';
 
-function save(){ localStorage.setItem('sv5', JSON.stringify(state)); }
-function render(){ renderFolders(); renderNoteList(); updateStats(); }
+function save(){localStorage.setItem('sv5',JSON.stringify(state));}
+function render(){renderFolders();renderNoteList();updateStats();}
 
-// ── PANEL TOGGLES ──
 function toggleSidebar(){
   const aside=document.querySelector('aside');
   const btn=document.getElementById('toggle-sidebar');
   aside.classList.toggle('hidden');
-  btn.classList.toggle('active', !aside.classList.contains('hidden'));
+  btn.classList.toggle('active',!aside.classList.contains('hidden'));
 }
 function toggleNoteList(){
   const nl=document.querySelector('.note-list');
   const btn=document.getElementById('toggle-notelist');
   nl.classList.toggle('hidden');
-  btn.classList.toggle('active', !nl.classList.contains('hidden'));
+  btn.classList.toggle('active',!nl.classList.contains('hidden'));
 }
 
-// ── CONTEXT MENU ──
 let ctxFolderId=null;
-function openCtxMenu(e, folderId){
-  e.preventDefault(); e.stopPropagation();
+function openCtxMenu(e,folderId){
+  e.preventDefault();e.stopPropagation();
   ctxFolderId=folderId;
   const menu=document.getElementById('ctx-menu');
   menu.classList.add('open');
-  const x=Math.min(e.clientX, window.innerWidth-160);
-  const y=Math.min(e.clientY, window.innerHeight-100);
-  menu.style.left=x+'px';
-  menu.style.top=y+'px';
+  menu.style.left=Math.min(e.clientX,window.innerWidth-160)+'px';
+  menu.style.top=Math.min(e.clientY,window.innerHeight-100)+'px';
 }
-function closeCtxMenu(){ document.getElementById('ctx-menu').classList.remove('open'); ctxFolderId=null; }
+function closeCtxMenu(){document.getElementById('ctx-menu').classList.remove('open');ctxFolderId=null;}
 function ctxRename(){
-  const folder=state.folders.find(f=>f.id===ctxFolderId); if(!folder)return;
+  const folder=state.folders.find(f=>f.id===ctxFolderId);if(!folder)return;
   closeCtxMenu();
-  const name=prompt('새 이름을 입력하세요:', folder.name);
-  if(name&&name.trim()) { folder.name=name.trim(); save(); render(); }
+  const name=prompt('새 이름을 입력하세요:',folder.name);
+  if(name&&name.trim()){folder.name=name.trim();save();render();}
 }
 function ctxDelete(){
-  const folder=state.folders.find(f=>f.id===ctxFolderId); if(!folder)return;
+  const folder=state.folders.find(f=>f.id===ctxFolderId);if(!folder)return;
   closeCtxMenu();
   if(!confirm(`"${folder.name}" 폴더를 삭제할까요?\n안의 노트도 모두 삭제됩니다.`))return;
   state.folders=state.folders.filter(f=>f.id!==ctxFolderId);
-  if(selFolderId===ctxFolderId){ selFolderId=null; selNoteId=null; showEmptyState(); }
-  save(); render();
+  if(selFolderId===ctxFolderId){selFolderId=null;selNoteId=null;showEmptyState();}
+  save();render();
 }
 
-// ── FOLDERS ──
 function renderFolders(){
-  const el=document.getElementById('folder-list'); el.innerHTML='';
+  const el=document.getElementById('folder-list');el.innerHTML='';
   if(state.folders.length===0){
     el.innerHTML='<div style="font-size:0.78rem;color:var(--text3);padding:8px 10px;font-weight:600;line-height:1.6;">아직 폴더가 없어요.<br>아래 버튼으로 추가하세요!</div>';
     return;
@@ -456,56 +396,50 @@ function renderFolders(){
       <div class="folder-info"><div class="folder-name">${f.name}</div><div class="folder-sub">${f.notes.length}개 노트</div></div>
       <div class="folder-badge">${f.notes.length}</div>`;
     d.onclick=()=>selectFolder(f.id);
-    // 우클릭
-    d.addEventListener('contextmenu', e=>openCtxMenu(e, f.id));
-    // 꾹 누르기 (모바일)
+    d.addEventListener('contextmenu',e=>openCtxMenu(e,f.id));
     let pressTimer;
-    d.addEventListener('touchstart',()=>{ pressTimer=setTimeout(()=>{ const fakeE={preventDefault:()=>{},stopPropagation:()=>{},clientX:d.getBoundingClientRect().right,clientY:d.getBoundingClientRect().top}; openCtxMenu(fakeE,f.id); },600); });
+    d.addEventListener('touchstart',()=>{pressTimer=setTimeout(()=>{const r=d.getBoundingClientRect();openCtxMenu({preventDefault:()=>{},stopPropagation:()=>{},clientX:r.right,clientY:r.top},f.id);},600);});
     d.addEventListener('touchend',()=>clearTimeout(pressTimer));
     d.addEventListener('touchmove',()=>clearTimeout(pressTimer));
     el.appendChild(d);
   });
 }
 function selectFolder(id){
-  selFolderId=id; selNoteId=null; showEmptyState(); render();
+  selFolderId=id;selNoteId=null;showEmptyState();render();
   document.querySelector('.note-list').scrollIntoView({behavior:'smooth',block:'nearest',inline:'start'});
 }
 function openFolderModal(){
-  selEmoji=EMOJIS[0]; selColor=COLORS[0];
+  selEmoji=EMOJIS[0];selColor=COLORS[0];
   document.getElementById('folder-name-input').value='';
-  renderEmojiPicker(); renderColorRow();
+  renderEmojiPicker();renderColorRow();
   document.getElementById('folder-modal').classList.add('open');
   setTimeout(()=>document.getElementById('folder-name-input').focus(),100);
 }
-function closeFolderModal(){ document.getElementById('folder-modal').classList.remove('open'); }
+function closeFolderModal(){document.getElementById('folder-modal').classList.remove('open');}
 function renderEmojiPicker(){
-  const el=document.getElementById('emoji-picker'); el.innerHTML='';
+  const el=document.getElementById('emoji-picker');el.innerHTML='';
   EMOJIS.forEach(e=>{
     const d=document.createElement('div');
     d.className='emoji-opt'+(e===selEmoji?' selected':'');
-    d.textContent=e;
-    d.onclick=()=>{ selEmoji=e; renderEmojiPicker(); };
+    d.textContent=e;d.onclick=()=>{selEmoji=e;renderEmojiPicker();};
     el.appendChild(d);
   });
 }
 function renderColorRow(){
-  const el=document.getElementById('color-row'); el.innerHTML='';
+  const el=document.getElementById('color-row');el.innerHTML='';
   COLORS.forEach(c=>{
     const d=document.createElement('div');
     d.className='color-swatch'+(c===selColor?' selected':'');
-    d.style.background=c;
-    d.onclick=()=>{ selColor=c; renderColorRow(); };
+    d.style.background=c;d.onclick=()=>{selColor=c;renderColorRow();};
     el.appendChild(d);
   });
 }
 function createFolder(){
-  const name=document.getElementById('folder-name-input').value.trim();
-  if(!name)return;
+  const name=document.getElementById('folder-name-input').value.trim();if(!name)return;
   const f={id:'f'+Date.now(),name,emoji:selEmoji,color:selColor,notes:[]};
-  state.folders.push(f); save(); closeFolderModal(); selectFolder(f.id);
+  state.folders.push(f);save();closeFolderModal();selectFolder(f.id);
 }
 
-// ── NOTES ──
 function renderNoteList(){
   const el=document.getElementById('notes-list');
   const folder=state.folders.find(f=>f.id===selFolderId);
@@ -520,8 +454,7 @@ function renderNoteList(){
   document.getElementById('list-icon').style.background=folder.color+'22';
   const filtered=folder.notes.filter(n=>{
     if(!searchQ)return true;
-    const allText=[n.title||'',...(n.pages||[]).map(p=>p.content)].join(' ').toLowerCase();
-    return allText.includes(searchQ);
+    return [n.title||'',...(n.pages||[]).map(p=>p.content)].join(' ').toLowerCase().includes(searchQ);
   });
   if(!filtered.length){
     el.innerHTML=`<div class="empty-notes">${searchQ?'검색 결과 없음 🔍':'아직 노트가 없어요<br>＋ 버튼으로 추가하세요 ✏️'}</div>`;
@@ -548,17 +481,14 @@ function updateStats(){
   document.getElementById('stat-today').textContent=todayC;
 }
 function newNote(){
-  if(!selFolderId){ alert('먼저 왼쪽에서 폴더를 선택해주세요!'); return; }
+  if(!selFolderId){alert('먼저 왼쪽에서 폴더를 선택해주세요!');return;}
   const title='새 노트 '+(state.folders.find(f=>f.id===selFolderId).notes.length+1);
   const note={id:'n'+Date.now(),title,pages:[{content:'',images:[]}],createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
   state.folders.find(f=>f.id===selFolderId).notes.push(note);
-  save(); selNoteId=note.id;
-  renderNoteList(); showEditor(note);
+  save();selNoteId=note.id;renderNoteList();showEditor(note);
 }
 function selectNote(id){
-  selNoteId=id;
-  const note=getCurrentNote();
-  renderNoteList(); showEditor(note);
+  selNoteId=id;const note=getCurrentNote();renderNoteList();showEditor(note);
 }
 function getCurrentNote(){
   if(!selFolderId||!selNoteId)return null;
@@ -570,9 +500,8 @@ function showEditor(note){
   const folder=state.folders.find(f=>f.id===selFolderId);
   document.getElementById('breadcrumb').textContent=`${folder.emoji} ${folder.name}`;
   document.getElementById('note-title-bar').value=note.title||'';
-  if(!note.pages||!note.pages.length) note.pages=[{content:'',images:[]}];
-  focusedPageIdx=0;
-  renderPages();
+  if(!note.pages||!note.pages.length)note.pages=[{content:'',images:[]}];
+  focusedPageIdx=0;renderPages();
   document.querySelector('.editor-area').scrollIntoView({behavior:'smooth',block:'nearest',inline:'start'});
 }
 function showEmptyState(){
@@ -580,142 +509,96 @@ function showEmptyState(){
   document.getElementById('editor').style.display='none';
 }
 
-// ── PAGES (GoodNotes style) ──
 function renderPages(){
-  const note=getCurrentNote(); if(!note)return;
-  const container=document.getElementById('pages-scroll');
-  container.innerHTML='';
+  const note=getCurrentNote();if(!note)return;
+  const container=document.getElementById('pages-scroll');container.innerHTML='';
   note.pages.forEach((page,i)=>{
-    const block=document.createElement('div');
-    block.className='page-block';
-    block.dataset.idx=i;
-
-    // delete button (hidden unless hover)
-    const delBtn=document.createElement('button');
-    delBtn.className='page-del-btn';
-    delBtn.textContent='✕';
-    delBtn.title='이 페이지 삭제';
-    delBtn.onclick=()=>deletePage(i);
-    block.appendChild(delBtn);
-
-    // images
+    const block=document.createElement('div');block.className='page-block';block.dataset.idx=i;
+    const delBtn=document.createElement('button');delBtn.className='page-del-btn';delBtn.textContent='✕';delBtn.onclick=()=>deletePage(i);block.appendChild(delBtn);
     if(page.images&&page.images.length){
-      const imgWrap=document.createElement('div');
-      imgWrap.className='page-images';
+      const imgWrap=document.createElement('div');imgWrap.className='page-images';
       page.images.forEach((src,j)=>{
-        const w=document.createElement('div');
-        w.className='note-img-wrap';
+        const w=document.createElement('div');w.className='note-img-wrap';
         w.innerHTML=`<img src="${src}"/><button class="note-img-del" onclick="removeImage(${i},${j})">✕</button>`;
         imgWrap.appendChild(w);
       });
       block.appendChild(imgWrap);
     }
-
-    // textarea
-    const ta=document.createElement('textarea');
-    ta.className='page-textarea';
-    ta.placeholder=`${i+1}페이지를 작성하세요...`;
-    ta.value=page.content||'';
-    ta.addEventListener('focus',()=>{ focusedPageIdx=i; });
-    ta.addEventListener('input',()=>{
-      note.pages[i].content=ta.value;
-      clearTimeout(saveT); saveT=setTimeout(saveNote,800);
-    });
+    const ta=document.createElement('textarea');ta.className='page-textarea';
+    ta.placeholder=`${i+1}페이지를 작성하세요...`;ta.value=page.content||'';
+    ta.addEventListener('focus',()=>{focusedPageIdx=i;});
+    ta.addEventListener('input',()=>{note.pages[i].content=ta.value;clearTimeout(saveT);saveT=setTimeout(saveNote,800);});
     block.appendChild(ta);
-
-    // page number
-    const pn=document.createElement('div');
-    pn.className='page-number';
-    pn.textContent=`${i+1} / ${note.pages.length}`;
-    block.appendChild(pn);
-
+    const pn=document.createElement('div');pn.className='page-number';pn.textContent=`${i+1} / ${note.pages.length}`;block.appendChild(pn);
     container.appendChild(block);
   });
-  updatePageCountBadge();
-}
-function updatePageCountBadge(){
-  const note=getCurrentNote(); if(!note)return;
   document.getElementById('page-count-badge').textContent=`${note.pages.length}페이지`;
 }
 function addPage(){
-  const note=getCurrentNote(); if(!note)return;
-  note.pages.push({content:'',images:[]});
-  save(); renderPages();
-  // scroll to new page
+  const note=getCurrentNote();if(!note)return;
+  note.pages.push({content:'',images:[]});save();renderPages();
   setTimeout(()=>{
     const container=document.getElementById('pages-scroll');
-    container.scrollTo({top:container.scrollHeight, behavior:'smooth'});
-    // focus new textarea
+    container.scrollTo({top:container.scrollHeight,behavior:'smooth'});
     const blocks=container.querySelectorAll('.page-block');
     const last=blocks[blocks.length-1];
-    if(last) last.querySelector('.page-textarea').focus();
+    if(last)last.querySelector('.page-textarea').focus();
   },50);
 }
 function deletePage(i){
-  const note=getCurrentNote(); if(!note||note.pages.length<=1)return;
+  const note=getCurrentNote();if(!note||note.pages.length<=1)return;
   if(!confirm(`${i+1}페이지를 삭제할까요?`))return;
   note.pages.splice(i,1);
-  if(focusedPageIdx>=note.pages.length) focusedPageIdx=note.pages.length-1;
-  save(); renderPages();
+  if(focusedPageIdx>=note.pages.length)focusedPageIdx=note.pages.length-1;
+  save();renderPages();
 }
 function saveNote(){
   if(!selNoteId)return;
-  const note=getCurrentNote(); if(!note)return;
-  const textareas=document.querySelectorAll('.page-textarea');
-  textareas.forEach((ta,i)=>{ if(note.pages[i]) note.pages[i].content=ta.value; });
+  const note=getCurrentNote();if(!note)return;
+  document.querySelectorAll('.page-textarea').forEach((ta,i)=>{if(note.pages[i])note.pages[i].content=ta.value;});
   note.title=document.getElementById('note-title-bar').value||'제목 없음';
   note.updatedAt=new Date().toISOString();
-  save(); renderNoteList(); showToast();
+  save();renderNoteList();showToast();
 }
 function deleteNote(){
-  if(!selNoteId)return;
-  if(!confirm('이 노트를 삭제할까요?'))return;
+  if(!selNoteId)return;if(!confirm('이 노트를 삭제할까요?'))return;
   const folder=state.folders.find(f=>f.id===selFolderId);
   folder.notes=folder.notes.filter(n=>n.id!==selNoteId);
-  selNoteId=null; save(); showEmptyState(); renderNoteList(); updateStats();
+  selNoteId=null;save();showEmptyState();renderNoteList();updateStats();
 }
-function filterNotes(){ searchQ=document.getElementById('search-input').value.toLowerCase(); renderNoteList(); }
-
-// ── IMAGES ──
-function removeImage(pageIdx, imgIdx){
-  const note=getCurrentNote(); if(!note)return;
-  note.pages[pageIdx].images.splice(imgIdx,1);
-  save(); renderPages();
+function filterNotes(){searchQ=document.getElementById('search-input').value.toLowerCase();renderNoteList();}
+function removeImage(pageIdx,imgIdx){
+  const note=getCurrentNote();if(!note)return;
+  note.pages[pageIdx].images.splice(imgIdx,1);save();renderPages();
 }
 
-// ── AI ──
 function saveApiKey(){
-  const val=document.getElementById('api-key-input').value.trim();
-  if(!val)return;
-  geminiKey=val; localStorage.setItem('gemini_key',val);
+  const val=document.getElementById('api-key-input').value.trim();if(!val)return;
+  geminiKey=val;localStorage.setItem('gemini_key',val);
   document.getElementById('api-key-input').value='';
   document.getElementById('api-key-input').placeholder='✓ API 키 저장됨';
   showToast();
 }
 function addMsg(role,text,loading=false){
   const el=document.getElementById('chat-messages');
-  const empty=el.querySelector('.chat-empty');
-  if(empty)empty.remove();
-  const div=document.createElement('div');
-  div.className=`chat-msg ${role}`;
+  const empty=el.querySelector('.chat-empty');if(empty)empty.remove();
+  const div=document.createElement('div');div.className=`chat-msg ${role}`;
   const time=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
   div.innerHTML=`<div class="chat-bubble${loading?' loading':''}">${text}</div><div class="chat-time">${time}</div>`;
-  el.appendChild(div); el.scrollTop=el.scrollHeight;
-  return div;
+  el.appendChild(div);el.scrollTop=el.scrollHeight;return div;
 }
 async function sendMessage(){
   const input=document.getElementById('chat-input');
-  const q=input.value.trim(); if(!q)return;
-  if(!geminiKey){ alert('먼저 Gemini API 키를 입력하고 저장해주세요!\n\nhttps://aistudio.google.com/app/apikey'); return; }
-  input.value=''; input.style.height='auto';
+  const q=input.value.trim();if(!q)return;
+  if(!geminiKey){alert('먼저 Gemini API 키를 입력하고 저장해주세요!\n\nhttps://aistudio.google.com/app/apikey');return;}
+  input.value='';input.style.height='auto';
   document.getElementById('chat-send-btn').disabled=true;
-  addMsg('user',q);
-  chatHistory.push({role:'user',parts:[{text:q}]});
+  addMsg('user',q);chatHistory.push({role:'user',parts:[{text:q}]});
   const noteTexts=Array.from(document.querySelectorAll('.page-textarea')).map(t=>t.value).join('\n\n');
   const sys=noteTexts
     ?`너는 어학 시험 공부를 도와주는 AI 튜터야. 다음은 사용자의 노트야:\n\n"""${noteTexts}"""\n\n이 내용을 참고해서 한국어로 답해줘.`
     :`너는 어학 시험(TOEIC, TOEFL 등) 공부를 도와주는 AI 튜터야. 친절하고 명확하게 한국어로 답해줘.`;
-  const loadingDiv=addMsg('ai','답변 생성 중...', true);
+  const loadingDiv=addMsg('ai','답변 생성 중...',true);
   try{
     const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`,{
       method:'POST',headers:{'Content-Type':'application/json'},
@@ -735,12 +618,9 @@ async function sendMessage(){
   document.getElementById('chat-send-btn').disabled=false;
 }
 
-// ── HELP ──
-function toggleHelp(){ document.getElementById('help-overlay').classList.toggle('open'); }
-function closeHelp(e){ if(e.target===document.getElementById('help-overlay')) document.getElementById('help-overlay').classList.remove('open'); }
-
-// ── UTILS ──
-function showToast(){ const t=document.getElementById('toast'); t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1800); }
+function toggleHelp(){document.getElementById('help-overlay').classList.toggle('open');}
+function closeHelp(e){if(e.target===document.getElementById('help-overlay'))document.getElementById('help-overlay').classList.remove('open');}
+function showToast(){const t=document.getElementById('toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);}
 function formatDate(iso){
   if(!iso)return'';
   const d=new Date(iso),now=new Date(),diff=now-d;
@@ -750,38 +630,28 @@ function formatDate(iso){
   return d.toLocaleDateString('ko-KR',{month:'short',day:'numeric'});
 }
 
-// ── INIT ──
 document.addEventListener('DOMContentLoaded',()=>{
-  // image upload → focused page
   document.getElementById('img-file-input').addEventListener('change',function(){
-    const note=getCurrentNote(); if(!note)return;
+    const note=getCurrentNote();if(!note)return;
     Array.from(this.files).forEach(file=>{
       const reader=new FileReader();
       reader.onload=e=>{
         note.pages[focusedPageIdx].images=note.pages[focusedPageIdx].images||[];
         note.pages[focusedPageIdx].images.push(e.target.result);
-        save(); renderPages();
+        save();renderPages();
       };
       reader.readAsDataURL(file);
     });
     this.value='';
   });
-  document.getElementById('note-title-bar').addEventListener('input',()=>{
-    clearTimeout(saveT); saveT=setTimeout(saveNote,800);
-  });
-  document.getElementById('chat-input').addEventListener('keydown',e=>{
-    if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMessage(); }
-  });
-  document.getElementById('chat-input').addEventListener('input',function(){
-    this.style.height='auto'; this.style.height=this.scrollHeight+'px';
-  });
-  document.addEventListener('click', ()=>closeCtxMenu());
-  document.addEventListener('keydown',e=>{
-    if((e.ctrlKey||e.metaKey)&&e.key==='s'){ e.preventDefault(); saveNote(); }
-  });
-  document.getElementById('folder-modal').addEventListener('click',function(e){ if(e.target===this)closeFolderModal(); });
-  document.getElementById('folder-name-input').addEventListener('keydown',e=>{ if(e.key==='Enter')createFolder(); });
-  if(geminiKey) document.getElementById('api-key-input').placeholder='✓ API 키 저장됨';
+  document.getElementById('note-title-bar').addEventListener('input',()=>{clearTimeout(saveT);saveT=setTimeout(saveNote,800);});
+  document.getElementById('chat-input').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}});
+  document.getElementById('chat-input').addEventListener('input',function(){this.style.height='auto';this.style.height=this.scrollHeight+'px';});
+  document.addEventListener('click',()=>closeCtxMenu());
+  document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();saveNote();}});
+  document.getElementById('folder-modal').addEventListener('click',function(e){if(e.target===this)closeFolderModal();});
+  document.getElementById('folder-name-input').addEventListener('keydown',e=>{if(e.key==='Enter')createFolder();});
+  if(geminiKey)document.getElementById('api-key-input').placeholder='✓ API 키 저장됨';
   render();
 });
 </script>
