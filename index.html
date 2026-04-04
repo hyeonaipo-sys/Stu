@@ -15,8 +15,17 @@ body::after{content:'';position:fixed;width:500px;height:500px;border-radius:50%
 .app{display:flex;height:100vh;position:relative;z-index:1;min-width:max-content;}
 
 /* SIDEBAR */
-aside{width:235px;min-width:235px;padding:24px 16px;display:flex;flex-direction:column;gap:4px;border-right:1px solid rgba(255,255,255,0.6);backdrop-filter:blur(24px);background:rgba(255,255,255,0.28);}
-.logo{font-size:1.3rem;font-weight:900;color:var(–text);padding:4px 10px 22px;letter-spacing:-0.03em;}
+/* TOGGLE */
+aside{width:235px;min-width:235px;padding:24px 16px;display:flex;flex-direction:column;gap:4px;border-right:1px solid rgba(255,255,255,0.6);backdrop-filter:blur(24px);background:rgba(255,255,255,0.28);transition:width 0.25s ease, min-width 0.25s ease, padding 0.25s ease, opacity 0.25s ease;}
+aside.hidden{width:0;min-width:0;padding:0;opacity:0;overflow:hidden;border:none;}
+.note-list{width:290px;min-width:290px;padding:20px 14px;display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,0.5);backdrop-filter:blur(12px);background:rgba(255,255,255,0.18);overflow:hidden;transition:width 0.25s ease, min-width 0.25s ease, padding 0.25s ease, opacity 0.25s ease;}
+.note-list.hidden{width:0;min-width:0;padding:0;opacity:0;overflow:hidden;border:none;}
+
+/* TOGGLE BUTTONS — floating top-left */
+.panel-toggles{position:fixed;top:16px;left:16px;z-index:500;display:flex;gap:6px;}
+.toggle-btn{width:34px;height:34px;border-radius:10px;border:1.5px solid rgba(255,255,255,0.8);background:rgba(255,255,255,0.7);backdrop-filter:blur(16px);color:var(–text2);font-size:0.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;box-shadow:0 2px 10px rgba(0,0,0,0.08);}
+.toggle-btn:hover{background:rgba(255,255,255,0.95);color:var(–accent);}
+.toggle-btn.active{background:var(–accent);color:white;border-color:var(–accent);}
 .logo em{font-style:normal;background:linear-gradient(135deg,#5b7fff,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .sidebar-label{font-size:0.67rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(–text3);padding:4px 10px;margin-top:6px;}
 .folder-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(–radius-sm);cursor:pointer;transition:all 0.18s;}
@@ -36,7 +45,8 @@ aside{width:235px;min-width:235px;padding:24px 16px;display:flex;flex-direction:
 .help-btn:hover{background:var(–accent);color:white;border-color:var(–accent);box-shadow:0 4px 12px rgba(91,127,255,0.3);}
 
 /* NOTE LIST */
-.note-list{width:290px;min-width:290px;padding:20px 14px;display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,0.5);backdrop-filter:blur(12px);background:rgba(255,255,255,0.18);overflow:hidden;}
+.note-list{width:290px;min-width:290px;padding:20px 14px;display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,0.5);backdrop-filter:blur(12px);background:rgba(255,255,255,0.18);overflow:hidden;transition:width 0.25s ease,min-width 0.25s ease,padding 0.25s ease,opacity 0.25s ease;}
+.note-list.hidden{width:0;min-width:0;padding:0;opacity:0;overflow:hidden;border:none;}
 .note-list-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding:0 2px;}
 .list-folder-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
 .note-list-title{font-size:1.05rem;font-weight:800;flex:1;}
@@ -71,7 +81,9 @@ aside{width:235px;min-width:235px;padding:24px 16px;display:flex;flex-direction:
 /* EDITOR TOPBAR */
 .editor-topbar{display:flex;align-items:center;padding:12px 20px;border-bottom:1px solid rgba(0,0,0,0.06);gap:10px;background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);border-radius:20px 20px 0 0;flex-shrink:0;}
 .breadcrumb{font-size:0.78rem;font-weight:700;color:var(–text3);}
-.note-title-bar{font-size:0.95rem;font-weight:800;color:var(–text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.note-title-bar{font-size:0.95rem;font-weight:800;color:var(–text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:none;border:none;outline:none;font-family:‘Nunito’,sans-serif;cursor:text;border-bottom:1.5px solid transparent;transition:border-color 0.15s;min-width:0;}
+.note-title-bar:focus{border-bottom-color:rgba(91,127,255,0.4);}
+.note-title-bar::placeholder{color:rgba(120,128,160,0.4);}
 .icon-btn{width:32px;height:32px;border-radius:10px;border:1.5px solid rgba(0,0,0,0.07);background:rgba(0,0,0,0.03);color:var(–text2);font-size:0.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
 .icon-btn:hover{background:rgba(0,0,0,0.06);}
 .icon-btn.del:hover{background:rgba(248,113,113,0.1);border-color:rgba(248,113,113,0.4);}
@@ -237,6 +249,11 @@ flex-shrink:0;
 
 </head>
 <body>
+<div class="panel-toggles">
+  <button class="toggle-btn active" id="toggle-sidebar" onclick="toggleSidebar()" title="폴더 패널">☰</button>
+  <button class="toggle-btn active" id="toggle-notelist" onclick="toggleNoteList()" title="노트 목록">📋</button>
+</div>
+
 <div class="app">
 
   <!-- SIDEBAR -->
@@ -282,7 +299,7 @@ flex-shrink:0;
     <div id="editor">
       <div class="editor-topbar">
         <div class="breadcrumb" id="breadcrumb">폴더</div>
-        <div class="note-title-bar" id="note-title-bar">노트</div>
+        <input class="note-title-bar" id="note-title-bar" placeholder="노트 제목..." />
         <button class="icon-btn save" onclick="saveNote()" title="저장 (Ctrl+S)">💾</button>
         <button class="icon-btn del" onclick="deleteNote()" title="삭제">🗑</button>
       </div>
@@ -382,6 +399,20 @@ let chatHistory=[], geminiKey=localStorage.getItem('gemini_key')||'';
 
 function save(){ localStorage.setItem('sv5', JSON.stringify(state)); }
 function render(){ renderFolders(); renderNoteList(); updateStats(); }
+
+// ── PANEL TOGGLES ──
+function toggleSidebar(){
+  const aside=document.querySelector('aside');
+  const btn=document.getElementById('toggle-sidebar');
+  aside.classList.toggle('hidden');
+  btn.classList.toggle('active', !aside.classList.contains('hidden'));
+}
+function toggleNoteList(){
+  const nl=document.querySelector('.note-list');
+  const btn=document.getElementById('toggle-notelist');
+  nl.classList.toggle('hidden');
+  btn.classList.toggle('active', !nl.classList.contains('hidden'));
+}
 
 // ── CONTEXT MENU ──
 let ctxFolderId=null;
@@ -538,7 +569,7 @@ function showEditor(note){
   document.getElementById('editor').style.display='flex';
   const folder=state.folders.find(f=>f.id===selFolderId);
   document.getElementById('breadcrumb').textContent=`${folder.emoji} ${folder.name}`;
-  document.getElementById('note-title-bar').textContent=note.title||'제목 없음';
+  document.getElementById('note-title-bar').value=note.title||'';
   if(!note.pages||!note.pages.length) note.pages=[{content:'',images:[]}];
   focusedPageIdx=0;
   renderPages();
@@ -630,13 +661,11 @@ function deletePage(i){
 function saveNote(){
   if(!selNoteId)return;
   const note=getCurrentNote(); if(!note)return;
-  // sync all textareas to state
   const textareas=document.querySelectorAll('.page-textarea');
   textareas.forEach((ta,i)=>{ if(note.pages[i]) note.pages[i].content=ta.value; });
+  note.title=document.getElementById('note-title-bar').value||'제목 없음';
   note.updatedAt=new Date().toISOString();
-  save(); renderNoteList();
-  document.getElementById('note-title-bar').textContent=note.title||'제목 없음';
-  showToast();
+  save(); renderNoteList(); showToast();
 }
 function deleteNote(){
   if(!selNoteId)return;
@@ -736,6 +765,9 @@ document.addEventListener('DOMContentLoaded',()=>{
       reader.readAsDataURL(file);
     });
     this.value='';
+  });
+  document.getElementById('note-title-bar').addEventListener('input',()=>{
+    clearTimeout(saveT); saveT=setTimeout(saveNote,800);
   });
   document.getElementById('chat-input').addEventListener('keydown',e=>{
     if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMessage(); }
