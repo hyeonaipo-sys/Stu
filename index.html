@@ -141,62 +141,88 @@ pointer-events:none;font-family:-apple-system,BlinkMacSystemFont,‘SF Pro Displ
 /* ── HUB PAGE ── */
 .hub{
 position:fixed;inset:0;z-index:1500;
-background:linear-gradient(135deg,#c8d9ff 0%,#dce8ff 40%,#ede8ff 70%,#d8eeff 100%);
 display:none;flex-direction:column;
 transition:opacity 0.4s ease;
-overflow-y:auto;
+overflow:hidden;
 }
-.hub::before{content:’’;position:fixed;width:600px;height:600px;border-radius:50%;filter:blur(90px);opacity:0.5;pointer-events:none;background:radial-gradient(circle,#a5c0ff,transparent);top:-150px;left:-150px;}
-.hub::after{content:’’;position:fixed;width:500px;height:500px;border-radius:50%;filter:blur(90px);opacity:0.4;pointer-events:none;background:radial-gradient(circle,#c4b5fd,transparent);bottom:-100px;right:-100px;}
+.hub-bg{
+position:absolute;inset:0;z-index:0;
+background:linear-gradient(135deg,#c8d9ff 0%,#dce8ff 40%,#ede8ff 70%,#d8eeff 100%);
+overflow:hidden;
+}
+.hub-bg::before{
+content:’’;position:absolute;
+width:500px;height:500px;border-radius:50%;
+background:#a78bfa;
+filter:blur(90px);opacity:0.25;
+top:-100px;left:-60px;
+}
+.hub-bg::after{
+content:’’;position:absolute;
+width:450px;height:450px;border-radius:50%;
+background:#f472b6;
+filter:blur(90px);opacity:0.22;
+bottom:-80px;right:-60px;
+}
+.hub-blob3{
+position:absolute;
+width:380px;height:380px;border-radius:50%;
+background:#60a5fa;
+filter:blur(90px);opacity:0.2;
+top:20%;right:-80px;
+pointer-events:none;
+}
+.hub-blob4{
+position:absolute;
+width:300px;height:300px;border-radius:50%;
+background:#34d399;
+filter:blur(80px);opacity:0.15;
+bottom:10%;left:5%;
+pointer-events:none;
+}
 .hub.open{display:flex;}
 .hub.hide{opacity:0;pointer-events:none;}
 .hub-header{
 display:flex;align-items:center;justify-content:center;
 padding:20px 24px 12px;flex-shrink:0;
+position:relative;z-index:2;
 }
 .hub-logo{font-size:1.5rem;font-weight:900;letter-spacing:-0.04em;color:#1a1d2e;font-family:-apple-system,BlinkMacSystemFont,‘SF Pro Display’,system-ui,sans-serif;}
 .hub-logo em{font-style:normal;background:linear-gradient(135deg,#5b7fff,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.hub-body{flex:1;padding:8px 24px 40px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-.hub-hint{font-size:0.72rem;color:#aab;text-align:center;margin-bottom:12px;font-weight:500;width:100%;max-width:700px;}
+.hub-body{flex:1;padding:12px 32px 40px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:2;}
+.hub-hint{font-size:0.72rem;color:#667;text-align:center;margin-bottom:12px;font-weight:500;width:100%;max-width:700px;}
 
 /* 비정형 벤토 그리드 — JS로 크기 지정 */
 .hub-grid{
 display:grid;
 grid-template-columns:repeat(10,1fr);
-gap:12px;
-grid-auto-rows:50px;
-max-width:700px;
+gap:16px;
+max-width:900px;
+width:100%;
 margin:0 auto;
+grid-auto-rows:80px;
 }
 .hub-folder{
-border-radius:20px;
-padding:14px 16px;
-display:flex;flex-direction:column;justify-content:center;align-items:center;
-cursor:pointer;transition:all 0.18s;
+border-radius:24px;
+padding:20px 22px;
+display:flex;align-items:center;justify-content:center;
+cursor:pointer;transition:all 0.2s;
 user-select:none;-webkit-user-drag:none;outline:none;
 position:relative;overflow:hidden;
-backdrop-filter:blur(10px);
-border:1.5px solid rgba(255,255,255,0.45);
-box-shadow:0 8px 28px rgba(80,100,180,0.12);
 }
-.hub-folder:active{transform:scale(0.96);}
-.hub-folder:hover{filter:brightness(1.06);transform:translateY(-2px);}
+.hub-folder:active{transform:translateY(2px) scale(0.98);box-shadow:0 2px 8px rgba(80,100,180,0.15)!important;}
+.hub-folder:hover{transform:translateY(-5px) scale(1.01);filter:brightness(1.04);}
 .hub-folder *{pointer-events:none;-webkit-user-drag:none;}
 .hub-folder-name{
-font-size:1rem;font-weight:800;color:white;
+font-size:1.1rem;font-weight:800;
+color:#2a2d4a;
 letter-spacing:-0.02em;
-text-shadow:0 1px 6px rgba(0,0,0,0.15);
 text-align:center;
+text-shadow:0 1px 2px rgba(255,255,255,0.8);
 }
-.hub-folder-blob{
-position:absolute;right:-28px;top:-28px;
-width:90px;height:90px;border-radius:50%;
-background:rgba(255,255,255,0.13);
-}
-.hub-folder-blob2{
-position:absolute;left:-20px;bottom:-28px;
-width:70px;height:70px;border-radius:50%;
-background:rgba(0,0,0,0.06);
+width:80px;height:80px;border-radius:50%;
+background:rgba(255,255,255,0.12);
+filter:blur(6px);
 }
 
 /* ── VOCAB PAGE ── */
@@ -591,10 +617,14 @@ display:none;
 <!-- HUB PAGE -->
 
 <div class="hub" id="hub">
-  <div class="hub-header">
+  <div class="hub-bg">
+    <div class="hub-blob3"></div>
+    <div class="hub-blob4"></div>
+  </div>
+  <div class="hub-header" style="position:relative;z-index:1;">
     <div class="hub-logo">Note<em>x</em></div>
   </div>
-  <div class="hub-body">
+  <div class="hub-body" style="position:relative;z-index:1;">
     <div class="hub-hint">길게 누르면 편집할 수 있어요</div>
     <div class="hub-grid" id="hub-grid"></div>
   </div>
@@ -607,8 +637,6 @@ display:none;
     <h3>폴더 편집</h3>
     <label>이름</label>
     <input type="text" id="hub-edit-name" placeholder="폴더 이름" />
-    <label>색상</label>
-    <div class="color-row" id="hub-edit-colors"></div>
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeHubEdit()">취소</button>
       <button class="btn-confirm" onclick="saveHubEdit()">저장</button>
@@ -1181,12 +1209,12 @@ function renderHub(){
     const [cs,rs]=BENTO_SIZES[i%BENTO_SIZES.length];
     div.style.gridColumn=`span ${cs}`;
     div.style.gridRow=`span ${rs}`;
-    div.style.background=f.color;
-    div.style.boxShadow=`0 6px 20px ${f.color}44`;
-    div.innerHTML=`
-      <div class="hub-folder-blob"></div>
-      <div class="hub-folder-blob2"></div>
-      <div class="hub-folder-name">${f.name}</div>`;
+    div.style.background='rgba(255,255,255,0.15)';
+    div.style.backdropFilter='blur(20px)';
+    div.style.webkitBackdropFilter='blur(20px)';
+    div.style.border='1px solid rgba(255,255,255,0.4)';
+    div.style.boxShadow='inset 0 1px 0 rgba(255,255,255,0.55), 0 4px 16px rgba(0,0,0,0.06)';
+    div.innerHTML=`<div class="hub-folder-name">${f.name}</div>`;
 
     let pressT=null, didLongPress=false;
     const startPress=()=>{ didLongPress=false; pressT=setTimeout(()=>{ didLongPress=true; openHubEdit(i); },600); };
@@ -1773,6 +1801,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.querySelector('.app').style.display='none';
   document.querySelector('.top-logo').style.display='none';
   document.querySelector('.help-btn-fixed').style.display='none';
+  document.getElementById('vocab-page').style.display='none';
+  document.getElementById('stats-page').classList.remove('open');
   render();
 });
 </script>
