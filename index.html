@@ -203,11 +203,12 @@ box-shadow:0 12px 40px rgba(100,120,200,0.18), inset 0 1px 0 rgba(255,255,255,1)
 .hub-folder:active{transform:scale(0.98);}
 .hub-folder *{pointer-events:none;}
 .hub-folder-name{
-font-size:1.3rem;font-weight:600;
+font-size:1.1rem;
+font-weight:400;
 color:#1a1d2e;
-letter-spacing:-0.02em;
+letter-spacing:-0.01em;
 text-align:center;
-font-family:-apple-system,BlinkMacSystemFont,‘SF Pro Display’,‘SF Pro Text’,system-ui,sans-serif;
+font-family:-apple-system,BlinkMacSystemFont,‘SF Pro Text’,system-ui,sans-serif;
 }
 
 /* ── VOCAB PAGE ── */
@@ -1167,12 +1168,15 @@ async function sendMessage(){
 // ── HUB ──
 const HUB_FOLDER_COLORS=['#ff6b9d','#ff9f43','#ffd93d','#6bcb77','#4d96ff','#c77dff','#ff6b6b','#48cae4','#f9844a','#b5e48c'];
 const _saved=JSON.parse(localStorage.getItem('hubFolders')||'null');
-// 이름이 체크면 출석으로 업데이트
-if(_saved){ _saved.forEach(f=>{ if(f.name==='체크') f.name='출석'; }); localStorage.setItem('hubFolders',JSON.stringify(_saved)); }
+if(_saved){
+  const _map={'노트':'Notes','출석':'Attendance','체크':'Attendance','통계':'Attendance','단어장':'Vocab'};
+  _saved.forEach(f=>{ if(_map[f.name]) f.name=_map[f.name]; });
+  localStorage.setItem('hubFolders',JSON.stringify(_saved));
+}
 let hubFolders=JSON.parse(localStorage.getItem('hubFolders')||'null')||[
-  {id:'notes',icon:'📝',name:'노트',color:'#4d96ff'},
-  {id:'stats',icon:'📊',name:'출석',color:'#ff6b9d'},
-  {id:'vocab',icon:'📖',name:'단어장',color:'#6bcb77'},
+  {id:'notes',icon:'📝',name:'Notes',color:'#4d96ff'},
+  {id:'stats',icon:'📊',name:'Attendance',color:'#ff6b9d'},
+  {id:'vocab',icon:'📖',name:'Vocab',color:'#6bcb77'},
 ];
 function saveHubFolders(){localStorage.setItem('hubFolders',JSON.stringify(hubFolders));}
 
