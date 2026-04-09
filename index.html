@@ -926,14 +926,14 @@ const SUPABASE_KEY='sb_publishable_XMFz4XCP9gnWzpO2UfcEwA_yxvx9Z8d';
 let sbToken=null,sbUser=null;
 
 async function sbSignInGoogle(){
-  // PKCE verifier 생성
   const arr=new Uint8Array(32);
   crypto.getRandomValues(arr);
   const verifier=Array.from(arr,b=>b.toString(16).padStart(2,'0')).join('');
-  sessionStorage.setItem('cv',verifier);
+  
+  // cookie에 저장 (redirect 후에도 유지됨)
+  document.cookie=`cv=${verifier};path=/;max-age=600;samesite=lax`;
   localStorage.setItem('cv',verifier);
 
-  // challenge 생성
   const enc=new TextEncoder();
   const buf=await crypto.subtle.digest('SHA-256',enc.encode(verifier));
   const challenge=btoa(String.fromCharCode(...new Uint8Array(buf)))
@@ -965,7 +965,7 @@ async function sbGetSession(){
   } else if(search.includes('code=')){
     const p=new URLSearchParams(search.slice(1));
     const code=p.get('code');
-    const verifier=localStorage.getItem('cv')||sessionStorage.getItem('cv')||'';
+    const verifier=(document.cookie.match(/cv=([^;]+)/)||[])[1]||localStorage.getItem('cv')||'';
     try{
       const r=await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=pkce`,{
         method:'POST',
