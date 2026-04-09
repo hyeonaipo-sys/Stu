@@ -9,6 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Notex">
 <meta name="theme-color" content="#dce8ff">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -920,125 +921,67 @@ display:none;
 <div class="toast" id="toast">✓ 저장됨</div>
 
 <script>
-// ── SUPABASE + GOOGLE AUTH ──
+// ── SUPABASE SDK ──
 const SUPABASE_URL='https://dxtdyljumdfzirfrtrdr.supabase.co';
 const SUPABASE_KEY='sb_publishable_XMFz4XCP9gnWzpO2UfcEwA_yxvx9Z8d';
-let sbToken=null, sbUser=null;
+let _sb=null;
+function getSB(){
+  if(!_sb) _sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+  return _sb;
+}
+let sbToken=null,sbUser=null;
 
 async function sbSignInGoogle(){
-  // PKCE flow
-  const array = new Uint8Array(32);
-  crypto.getRandomValues(array);
-  const verifier = btoa(String.fromCharCode(...array)).replace(/[^a-zA-Z0-9]/g,'').substring(0,43);
-  localStorage.setItem('pkce_verifier', verifier);
-  
-  const encoder = new TextEncoder();
-  const data = encoder.encode(verifier);
-  const digest = await crypto.subtle.digest('SHA-256', data);
-  const challenge = btoa(String.fromCharCode(...new Uint8Array(digest)))
-    .replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
-  
-  window.location.href = `${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent('https://stu-taupe.vercel.app')}&code_challenge=${challenge}&code_challenge_method=S256`;
+  await getSB().auth.signInWithOAuth({
+    provider:'google',
+    options:{redirectTo:'https://stu-taupe.vercel.app'}
+  });
 }
 
 async function sbSignOut(){
-  if(!sbToken)return;
-  await fetch(`${SUPABASE_URL}/auth/v1/logout`,{
-    method:'POST',
-    headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+sbToken}
-  });
+  await getSB().auth.signOut();
   sbToken=null;sbUser=null;
-  localStorage.removeItem('sb_token');
   showLoginScreen();
 }
 
 async function sbGetSession(){
-  // URL에서 토큰 확인 (구글 로그인 후 리다이렉트)
-async function sbGetSession(){
-  const hash=window.location.hash;
-  const search=window.location.search;
-
-  if(hash.includes('access_token')){
-    const params=new URLSearchParams(hash.slice(1));
-    const token=params.get('access_token');
-    if(token){sbToken=token;localStorage.setItem('sb_token',sbToken);}
-    history.replaceState(null,'',location.pathname);
-  } else if(search.includes('code=')){
-    const params=new URLSearchParams(search.slice(1));
-    const code=params.get('code');
-    const verifier=localStorage.getItem('pkce_verifier')||'';
-    try{
-      const r=await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=pkce`,{
-        method:'POST',
-        headers:{'apikey':SUPABASE_KEY,'Content-Type':'application/json'},
-        body:JSON.stringify({auth_code:code,code_verifier:verifier})
-      });
-      const d=await r.json();
-      if(d.access_token){
-        sbToken=d.access_token;
-        localStorage.setItem('sb_token',sbToken);
-        localStorage.removeItem('pkce_verifier');
-      } else {
-        // 화면에 에러 표시
-        document.body.innerHTML='<div style="padding:40px;font-size:14px;background:white;word-break:break-all;">PKCE ERROR:<br>code: '+code+'<br><br>verifier: '+verifier+'<br><br>response: '+JSON.stringify(d)+'</div>';
-        return false;
-      }
-    }catch(e){
-      document.body.innerHTML='<div style="padding:40px;font-size:14px;">FETCH ERROR: '+e.message+'</div>';
-      return false;
-    }
-    history.replaceState(null,'',location.pathname);
-  } else {
-    sbToken=localStorage.getItem('sb_token');
+  const {data}=await getSB().auth.getSession();
+  if(data&&data.session){
+    sbToken=data.session.access_token;
+    sbUser=data.session.user;
+    return true;
   }
-
-  if(!sbToken)return false;
-  try{
-    const r=await fetch(`${SUPABASE_URL}/auth/v1/user`,{
-      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+sbToken}
-    });
-    const d=await r.json();
-    if(d.id){sbUser=d;return true;}
-    else{sbToken=null;localStorage.removeItem('sb_token');return false;}
-  }catch(e){return false;}
+  return false;
 }
 
 async function sbGet(table){
   if(!sbToken)return null;
   try{
-    const r=await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=data&limit=1`,{
-      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+sbToken}
-    });
-    const d=await r.json();
-    return d&&d[0]?d[0].data:null;
+    const {data}=await getSB().from(table).select('data').eq('user_id',sbUser.id).limit(1);
+    return data&&data[0]?data[0].data:null;
   }catch(e){return null;}
 }
 
 async function sbSet(table,data){
   if(!sbToken||!sbUser)return;
   try{
-    // 기존 row 있는지 확인
-    const r=await fetch(`${SUPABASE_URL}/rest/v1/${table}?user_id=eq.${sbUser.id}`,{
-      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+sbToken}
-    });
-    const existing=await r.json();
+    const {data:existing}=await getSB().from(table).select('id').eq('user_id',sbUser.id).limit(1);
     if(existing&&existing.length>0){
-      // UPDATE
-      await fetch(`${SUPABASE_URL}/rest/v1/${table}?user_id=eq.${sbUser.id}`,{
-        method:'PATCH',
-        headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+sbToken,'Content-Type':'application/json'},
-        body:JSON.stringify({data:data,updated_at:new Date().toISOString()})
-      });
-    } else {
-      // INSERT
-      await fetch(`${SUPABASE_URL}/rest/v1/${table}`,{
-        method:'POST',
-        headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+sbToken,'Content-Type':'application/json'},
-        body:JSON.stringify({user_id:sbUser.id,data:data,updated_at:new Date().toISOString()})
-      });
+      await getSB().from(table).update({data:data,updated_at:new Date().toISOString()}).eq('user_id',sbUser.id);
+    }else{
+      await getSB().from(table).insert({user_id:sbUser.id,data:data,updated_at:new Date().toISOString()});
     }
   }catch(e){}
 }
+
+async function sbGetProfile(){
+  if(!sbToken||!sbUser)return null;
+  try{
+    const {data}=await getSB().from('profile').select('*').eq('user_id',sbUser.id).limit(1);
+    return data&&data[0]?data[0]:null;
+  }catch(e){return null;}
+}
+
 
 const EMOJIS=['📚','📝','✏️','🎯','💡','🔤','🗣️','👂','✍️','📖','🧠','⭐','🔥','💎','🌟'];
 const COLORS=['#5b7fff','#a78bfa','#38bdf8','#34d399','#fbbf24','#f87171','#fb923c','#e879f9'];
