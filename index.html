@@ -926,7 +926,8 @@ const SUPABASE_KEY='sb_publishable_XMFz4XCP9gnWzpO2UfcEwA_yxvx9Z8d';
 let sbToken=null,sbUser=null;
 
 function sbSignInGoogle(){
-  window.location.href=`${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent('https://stu-taupe.vercel.app')}`;
+  const redirectTo=encodeURIComponent('https://stu-taupe.vercel.app');
+  window.location.href=`${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${redirectTo}&flow_type=implicit`;
 }
 
 async function sbSignOut(){
