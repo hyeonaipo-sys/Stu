@@ -943,41 +943,24 @@ async function sbSignOut(){
 async function sbGetSession(){
   // URL에서 토큰 확인 (구글 로그인 후 리다이렉트)
 async function sbGetSession(){
-  // URL hash에서 토큰 확인
   const hash=window.location.hash;
   const search=window.location.search;
-  
+
+  // hash에 access_token 있으면 무조건 사용 (error 무시)
   if(hash.includes('access_token')){
     const params=new URLSearchParams(hash.slice(1));
-    sbToken=params.get('access_token');
-    localStorage.setItem('sb_token',sbToken);
+    const token=params.get('access_token');
+    if(token){ sbToken=token; localStorage.setItem('sb_token',sbToken); }
     history.replaceState(null,'',location.pathname);
   } else if(search.includes('access_token')){
     const params=new URLSearchParams(search.slice(1));
-    sbToken=params.get('access_token');
-    localStorage.setItem('sb_token',sbToken);
-    history.replaceState(null,'',location.pathname);
-  } else if(search.includes('code=')){
-    // PKCE flow - code exchange
-    const params=new URLSearchParams(search.slice(1));
-    const code=params.get('code');
-    try{
-      const r=await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=pkce`,{
-        method:'POST',
-        headers:{'apikey':SUPABASE_KEY,'Content-Type':'application/json'},
-        body:JSON.stringify({auth_code:code,code_verifier:localStorage.getItem('pkce_verifier')||''})
-      });
-      const d=await r.json();
-      if(d.access_token){
-        sbToken=d.access_token;
-        localStorage.setItem('sb_token',sbToken);
-      }
-    }catch(e){}
+    const token=params.get('access_token');
+    if(token){ sbToken=token; localStorage.setItem('sb_token',sbToken); }
     history.replaceState(null,'',location.pathname);
   } else {
     sbToken=localStorage.getItem('sb_token');
   }
-  
+
   if(!sbToken)return false;
   try{
     const r=await fetch(`${SUPABASE_URL}/auth/v1/user`,{
