@@ -949,43 +949,51 @@ async function sbSignOut(){
 }
 
 async function sbGetSession(){
-  const hash=window.location.hash;
-  const search=window.location.search;
-
-  if(hash&&hash.includes('access_token')){
-    const p=new URLSearchParams(hash.slice(1));
+  const fullURL=document.URL;
+  const hashIdx=fullURL.indexOf('#');
+  const qIdx=fullURL.indexOf('?');
+  
+  // hash에서 토큰 파싱
+  if(hashIdx>-1){
+    const hashStr=fullURL.slice(hashIdx+1);
+    const p=new URLSearchParams(hashStr);
     const t=p.get('access_token');
-    if(t){sbToken=t;localStorage.setItem('sb_token',t);}
-    history.replaceState(null,'',location.pathname);
-  } else if(search.includes('access_token')){
-    const p=new URLSearchParams(search.slice(1));
-    const t=p.get('access_token');
-    if(t){sbToken=t;localStorage.setItem('sb_token',t);}
-    history.replaceState(null,'',location.pathname);
-  } else if(search.includes('code=')){
-    const p=new URLSearchParams(search.slice(1));
+    if(t){
+      sbToken=t;
+      localStorage.setItem('sb_token',t);
+      history.replaceState(null,'',location.pathname);
+    }
+  }
+  
+  // query에서 code 파싱
+  if(!sbToken&&qIdx>-1){
+    const qStr=fullURL.slice(qIdx+1).split('#')[0];
+    const p=new URLSearchParams(qStr);
     const code=p.get('code');
-    const verifier=(document.cookie.match(/cv=([^;]+)/)||[])[1]||localStorage.getItem('cv')||'';
-    try{
-      const r=await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=pkce`,{
-        method:'POST',
-        headers:{'apikey':SUPABASE_KEY,'Content-Type':'application/json'},
-        body:JSON.stringify({auth_code:code,code_verifier:verifier})
-      });
-      const d=await r.json();
-      if(d.access_token){
-        sbToken=d.access_token;
-        localStorage.setItem('sb_token',sbToken);
-        localStorage.removeItem('cv');
-        sessionStorage.removeItem('cv');
-      }
-    }catch(e){}
-    history.replaceState(null,'',location.pathname);
-  } else {
-    sbToken=localStorage.getItem('sb_token');
+    if(code){
+      const verifier=(document.cookie.match(/cv=([^;]+)/)||[])[1]||localStorage.getItem('cv')||'';
+      try{
+        const r=await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=pkce`,{
+          method:'POST',
+          headers:{'apikey':SUPABASE_KEY,'Content-Type':'application/json'},
+          body:JSON.stringify({auth_code:code,code_verifier:verifier})
+        });
+        const d=await r.json();
+        if(d.access_token){
+          sbToken=d.access_token;
+          localStorage.setItem('sb_token',sbToken);
+          localStorage.removeItem('cv');
+          document.cookie='cv=;path=/;max-age=0';
+        }
+      }catch(e){}
+      history.replaceState(null,'',location.pathname);
+    }
   }
 
-  if(!sbToken)return false;
+  // localStorage에서 토큰 복원
+  if(!sbToken) sbToken=localStorage.getItem('sb_token');
+  if(!sbToken) return false;
+
   try{
     const r=await fetch(`${SUPABASE_URL}/auth/v1/user`,{
       headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+sbToken}
