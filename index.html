@@ -925,12 +925,8 @@ const SUPABASE_URL='https://dxtdyljumdfzirfrtrdr.supabase.co';
 const SUPABASE_KEY='sb_publishable_XMFz4XCP9gnWzpO2UfcEwA_yxvx9Z8d';
 let sbToken=null, sbUser=null;
 
-async function sbSignInGoogle(){
-  const r=await fetch(`${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent(location.href)}`,{
-    headers:{'apikey':SUPABASE_KEY}
-  });
-  // redirect to Google
-  window.location.href=`${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent(location.href)}`;
+function sbSignInGoogle(){
+  window.location.href=`${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent('https://stu-taupe.vercel.app')}`;
 }
 
 async function sbSignOut(){
