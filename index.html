@@ -939,7 +939,7 @@ async function sbSignInGoogle(){
   const challenge=btoa(String.fromCharCode(...new Uint8Array(buf)))
     .replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 
-  window.location.href=`${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent('https://stu-taupe.vercel.app')}&code_challenge=${challenge}&code_challenge_method=S256`;
+  window.location.href=`${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent('https://stu-taupe.vercel.app/study-notes.html')}&code_challenge=${challenge}&code_challenge_method=S256`;
 }
 
 async function sbSignOut(){
