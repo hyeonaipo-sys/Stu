@@ -925,8 +925,20 @@ const SUPABASE_URL='https://dxtdyljumdfzirfrtrdr.supabase.co';
 const SUPABASE_KEY='sb_publishable_XMFz4XCP9gnWzpO2UfcEwA_yxvx9Z8d';
 let sbToken=null, sbUser=null;
 
-function sbSignInGoogle(){
-  window.location.href=`${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent('https://stu-taupe.vercel.app')}&response_type=token`;
+async function sbSignInGoogle(){
+  // PKCE flow
+  const array = new Uint8Array(32);
+  crypto.getRandomValues(array);
+  const verifier = btoa(String.fromCharCode(...array)).replace(/[^a-zA-Z0-9]/g,'').substring(0,43);
+  localStorage.setItem('pkce_verifier', verifier);
+  
+  const encoder = new TextEncoder();
+  const data = encoder.encode(verifier);
+  const digest = await crypto.subtle.digest('SHA-256', data);
+  const challenge = btoa(String.fromCharCode(...new Uint8Array(digest)))
+    .replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
+  
+  window.location.href = `${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent('https://stu-taupe.vercel.app')}&code_challenge=${challenge}&code_challenge_method=S256`;
 }
 
 async function sbSignOut(){
@@ -946,16 +958,29 @@ async function sbGetSession(){
   const hash=window.location.hash;
   const search=window.location.search;
 
-  // hash에 access_token 있으면 무조건 사용 (error 무시)
   if(hash.includes('access_token')){
     const params=new URLSearchParams(hash.slice(1));
     const token=params.get('access_token');
-    if(token){ sbToken=token; localStorage.setItem('sb_token',sbToken); }
+    if(token){sbToken=token;localStorage.setItem('sb_token',sbToken);}
     history.replaceState(null,'',location.pathname);
-  } else if(search.includes('access_token')){
+  } else if(search.includes('code=')){
+    // PKCE code exchange
     const params=new URLSearchParams(search.slice(1));
-    const token=params.get('access_token');
-    if(token){ sbToken=token; localStorage.setItem('sb_token',sbToken); }
+    const code=params.get('code');
+    const verifier=localStorage.getItem('pkce_verifier')||'';
+    try{
+      const r=await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=pkce`,{
+        method:'POST',
+        headers:{'apikey':SUPABASE_KEY,'Content-Type':'application/json'},
+        body:JSON.stringify({auth_code:code,code_verifier:verifier})
+      });
+      const d=await r.json();
+      if(d.access_token){
+        sbToken=d.access_token;
+        localStorage.setItem('sb_token',sbToken);
+        localStorage.removeItem('pkce_verifier');
+      }
+    }catch(e){console.error(e);}
     history.replaceState(null,'',location.pathname);
   } else {
     sbToken=localStorage.getItem('sb_token');
