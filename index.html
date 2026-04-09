@@ -9,7 +9,6 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Notex">
 <meta name="theme-color" content="#dce8ff">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -921,65 +920,96 @@ display:none;
 <div class="toast" id="toast">✓ 저장됨</div>
 
 <script>
-// ── SUPABASE SDK ──
+// ── SUPABASE ──
 const SUPABASE_URL='https://dxtdyljumdfzirfrtrdr.supabase.co';
 const SUPABASE_KEY='sb_publishable_XMFz4XCP9gnWzpO2UfcEwA_yxvx9Z8d';
-let _sb=null;
-function getSB(){
-  if(!_sb) _sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-  return _sb;
-}
 let sbToken=null,sbUser=null;
 
-async function sbSignInGoogle(){
-  await getSB().auth.signInWithOAuth({
-    provider:'google',
-    options:{redirectTo:'https://stu-taupe.vercel.app'}
-  });
+function sbSignInGoogle(){
+  window.location.href=`${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent('https://stu-taupe.vercel.app')}`;
 }
 
 async function sbSignOut(){
-  await getSB().auth.signOut();
   sbToken=null;sbUser=null;
+  localStorage.removeItem('sb_token');
   showLoginScreen();
 }
 
 async function sbGetSession(){
-  const {data}=await getSB().auth.getSession();
-  if(data&&data.session){
-    sbToken=data.session.access_token;
-    sbUser=data.session.user;
-    return true;
+  const hash=window.location.hash;
+  const search=window.location.search;
+
+  if(hash&&hash.includes('access_token')){
+    const p=new URLSearchParams(hash.slice(1));
+    const t=p.get('access_token');
+    if(t){sbToken=t;localStorage.setItem('sb_token',t);}
+    history.replaceState(null,'',location.pathname);
+  } else if(search.includes('access_token')){
+    const p=new URLSearchParams(search.slice(1));
+    const t=p.get('access_token');
+    if(t){sbToken=t;localStorage.setItem('sb_token',t);}
+    history.replaceState(null,'',location.pathname);
+  } else if(search.includes('code=')){
+    // code를 토큰으로 교환
+    const p=new URLSearchParams(search.slice(1));
+    const code=p.get('code');
+    try{
+      const r=await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=pkce`,{
+        method:'POST',
+        headers:{'apikey':SUPABASE_KEY,'Content-Type':'application/x-www-form-urlencoded'},
+        body:`auth_code=${encodeURIComponent(code)}&code_verifier=`
+      });
+      const d=await r.json();
+      if(d.access_token){sbToken=d.access_token;localStorage.setItem('sb_token',sbToken);}
+    }catch(e){}
+    history.replaceState(null,'',location.pathname);
+  } else {
+    sbToken=localStorage.getItem('sb_token');
   }
-  return false;
+
+  if(!sbToken)return false;
+  try{
+    const r=await fetch(`${SUPABASE_URL}/auth/v1/user`,{
+      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+sbToken}
+    });
+    const d=await r.json();
+    if(d.id){sbUser=d;return true;}
+    sbToken=null;localStorage.removeItem('sb_token');return false;
+  }catch(e){return false;}
 }
 
 async function sbGet(table){
-  if(!sbToken)return null;
+  if(!sbToken||!sbUser)return null;
   try{
-    const {data}=await getSB().from(table).select('data').eq('user_id',sbUser.id).limit(1);
-    return data&&data[0]?data[0].data:null;
+    const r=await fetch(`${SUPABASE_URL}/rest/v1/${table}?user_id=eq.${sbUser.id}&select=data&limit=1`,{
+      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+sbToken}
+    });
+    const d=await r.json();
+    return d&&d[0]?d[0].data:null;
   }catch(e){return null;}
 }
 
 async function sbSet(table,data){
   if(!sbToken||!sbUser)return;
   try{
-    const {data:existing}=await getSB().from(table).select('id').eq('user_id',sbUser.id).limit(1);
-    if(existing&&existing.length>0){
-      await getSB().from(table).update({data:data,updated_at:new Date().toISOString()}).eq('user_id',sbUser.id);
+    const chk=await fetch(`${SUPABASE_URL}/rest/v1/${table}?user_id=eq.${sbUser.id}&select=id&limit=1`,{
+      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+sbToken}
+    });
+    const ex=await chk.json();
+    if(ex&&ex.length>0){
+      await fetch(`${SUPABASE_URL}/rest/v1/${table}?user_id=eq.${sbUser.id}`,{
+        method:'PATCH',
+        headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+sbToken,'Content-Type':'application/json'},
+        body:JSON.stringify({data,updated_at:new Date().toISOString()})
+      });
     }else{
-      await getSB().from(table).insert({user_id:sbUser.id,data:data,updated_at:new Date().toISOString()});
+      await fetch(`${SUPABASE_URL}/rest/v1/${table}`,{
+        method:'POST',
+        headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+sbToken,'Content-Type':'application/json'},
+        body:JSON.stringify({user_id:sbUser.id,data,updated_at:new Date().toISOString()})
+      });
     }
   }catch(e){}
-}
-
-async function sbGetProfile(){
-  if(!sbToken||!sbUser)return null;
-  try{
-    const {data}=await getSB().from('profile').select('*').eq('user_id',sbUser.id).limit(1);
-    return data&&data[0]?data[0]:null;
-  }catch(e){return null;}
 }
 
 
@@ -1998,7 +2028,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     render();
   });
 });
-}
 </script>
 
 <script>
