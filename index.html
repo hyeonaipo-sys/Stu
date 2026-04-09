@@ -925,9 +925,21 @@ const SUPABASE_URL='https://dxtdyljumdfzirfrtrdr.supabase.co';
 const SUPABASE_KEY='sb_publishable_XMFz4XCP9gnWzpO2UfcEwA_yxvx9Z8d';
 let sbToken=null,sbUser=null;
 
-function sbSignInGoogle(){
-  const redirectTo=encodeURIComponent('https://stu-taupe.vercel.app');
-  window.location.href=`${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${redirectTo}&flow_type=implicit`;
+async function sbSignInGoogle(){
+  // PKCE verifier 생성
+  const arr=new Uint8Array(32);
+  crypto.getRandomValues(arr);
+  const verifier=Array.from(arr,b=>b.toString(16).padStart(2,'0')).join('');
+  sessionStorage.setItem('cv',verifier);
+  localStorage.setItem('cv',verifier);
+
+  // challenge 생성
+  const enc=new TextEncoder();
+  const buf=await crypto.subtle.digest('SHA-256',enc.encode(verifier));
+  const challenge=btoa(String.fromCharCode(...new Uint8Array(buf)))
+    .replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+
+  window.location.href=`${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent('https://stu-taupe.vercel.app')}&code_challenge=${challenge}&code_challenge_method=S256`;
 }
 
 async function sbSignOut(){
@@ -951,17 +963,22 @@ async function sbGetSession(){
     if(t){sbToken=t;localStorage.setItem('sb_token',t);}
     history.replaceState(null,'',location.pathname);
   } else if(search.includes('code=')){
-    // code를 토큰으로 교환
     const p=new URLSearchParams(search.slice(1));
     const code=p.get('code');
+    const verifier=localStorage.getItem('cv')||sessionStorage.getItem('cv')||'';
     try{
       const r=await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=pkce`,{
         method:'POST',
-        headers:{'apikey':SUPABASE_KEY,'Content-Type':'application/x-www-form-urlencoded'},
-        body:`auth_code=${encodeURIComponent(code)}&code_verifier=`
+        headers:{'apikey':SUPABASE_KEY,'Content-Type':'application/json'},
+        body:JSON.stringify({auth_code:code,code_verifier:verifier})
       });
       const d=await r.json();
-      if(d.access_token){sbToken=d.access_token;localStorage.setItem('sb_token',sbToken);}
+      if(d.access_token){
+        sbToken=d.access_token;
+        localStorage.setItem('sb_token',sbToken);
+        localStorage.removeItem('cv');
+        sessionStorage.removeItem('cv');
+      }
     }catch(e){}
     history.replaceState(null,'',location.pathname);
   } else {
