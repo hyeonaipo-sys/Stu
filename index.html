@@ -587,12 +587,21 @@ display:none;
 
 <!-- 로그인 화면 -->
 
-<div id="login-screen" style="display:none;position:fixed;inset:0;z-index:3000;background:linear-gradient(135deg,#c8d9ff,#dce8ff,#ede8ff);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;">
+<div id="login-screen" style="display:none;position:fixed;inset:0;z-index:3000;background:linear-gradient(135deg,#c8d9ff,#dce8ff,#ede8ff);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;">
   <div style="font-size:2.5rem;font-weight:900;letter-spacing:-0.04em;color:#1a1d2e;font-family:-apple-system,sans-serif;">Note<em style="font-style:normal;background:linear-gradient(135deg,#5b7fff,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">x</em></div>
-  <button onclick="sbSignInGoogle()" style="margin-top:16px;display:flex;align-items:center;gap:10px;padding:14px 28px;border-radius:100px;border:1.5px solid rgba(0,0,0,0.1);background:white;font-size:0.95rem;font-weight:600;font-family:-apple-system,sans-serif;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
-    <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-    Google로 로그인
-  </button>
+  <div id="login-step1" style="display:flex;flex-direction:column;align-items:center;gap:12px;width:280px;">
+    <input id="login-email" type="email" placeholder="이메일 입력" style="width:100%;padding:13px 16px;border-radius:14px;border:1.5px solid rgba(200,210,240,0.8);background:rgba(255,255,255,0.8);font-size:0.95rem;font-family:-apple-system,sans-serif;outline:none;box-sizing:border-box;text-align:center;"/>
+    <button onclick="sbSendMagicLink()" style="width:100%;padding:13px;border-radius:100px;border:none;background:linear-gradient(135deg,#5b7fff,#7c6fef);color:white;font-size:0.95rem;font-weight:700;font-family:-apple-system,sans-serif;cursor:pointer;">로그인 링크 받기 →</button>
+    <button onclick="sbSignInGoogle()" style="width:100%;padding:13px;border-radius:100px;border:1.5px solid rgba(0,0,0,0.1);background:white;font-size:0.9rem;font-weight:600;font-family:-apple-system,sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      Google로 로그인
+    </button>
+  </div>
+  <div id="login-sent" style="display:none;flex-direction:column;align-items:center;gap:8px;text-align:center;">
+    <div style="font-size:2rem;">📧</div>
+    <div style="font-weight:700;color:#1a1d2e;">이메일을 확인해주세요!</div>
+    <div style="font-size:0.85rem;color:#7880a0;">로그인 링크가 발송됐어요</div>
+  </div>
 </div>
 
 <!-- 상단 유저 정보 -->
@@ -925,21 +934,32 @@ const SUPABASE_URL='https://dxtdyljumdfzirfrtrdr.supabase.co';
 const SUPABASE_KEY='sb_publishable_XMFz4XCP9gnWzpO2UfcEwA_yxvx9Z8d';
 let sbToken=null,sbUser=null;
 
+async function sbSendMagicLink(){
+  const email=document.getElementById('login-email').value.trim();
+  if(!email){alert('이메일을 입력해주세요!');return;}
+  try{
+    const r=await fetch(`${SUPABASE_URL}/auth/v1/magiclink`,{
+      method:'POST',
+      headers:{'apikey':SUPABASE_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({email,create_user:true})
+    });
+    if(r.ok){
+      document.getElementById('login-step1').style.display='none';
+      document.getElementById('login-sent').style.display='flex';
+    }else{alert('오류가 발생했어요.');}
+  }catch(e){alert('오류: '+e.message);}
+}
+
 async function sbSignInGoogle(){
   const arr=new Uint8Array(32);
   crypto.getRandomValues(arr);
   const verifier=Array.from(arr,b=>b.toString(16).padStart(2,'0')).join('');
-  
-  // cookie에 저장 (redirect 후에도 유지됨)
   document.cookie=`cv=${verifier};path=/;max-age=600;samesite=lax`;
   localStorage.setItem('cv',verifier);
-
   const enc=new TextEncoder();
   const buf=await crypto.subtle.digest('SHA-256',enc.encode(verifier));
-  const challenge=btoa(String.fromCharCode(...new Uint8Array(buf)))
-    .replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-
-  window.location.href=`${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent('https://stu-taupe.vercel.app/study-notes.html')}&code_challenge=${challenge}&code_challenge_method=S256`;
+  const challenge=btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  window.location.href=`${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent('https://stu-taupe.vercel.app')}&code_challenge=${challenge}&code_challenge_method=S256`;
 }
 
 async function sbSignOut(){
@@ -950,47 +970,28 @@ async function sbSignOut(){
 
 async function sbGetSession(){
   const fullURL=document.URL;
-  const hashIdx=fullURL.indexOf('#');
   const qIdx=fullURL.indexOf('?');
   
-  // hash에서 토큰 파싱
-  if(hashIdx>-1){
-    const hashStr=fullURL.slice(hashIdx+1);
-    const p=new URLSearchParams(hashStr);
+  if(qIdx>-1){
+    const qStr=fullURL.slice(qIdx+1).split('#')[0];
+    const p=new URLSearchParams(qStr);
+    
+    // 서버리스 함수에서 받은 access_token
     const t=p.get('access_token');
     if(t){
       sbToken=t;
       localStorage.setItem('sb_token',t);
       history.replaceState(null,'',location.pathname);
     }
-  }
-  
-  // query에서 code 파싱
-  if(!sbToken&&qIdx>-1){
-    const qStr=fullURL.slice(qIdx+1).split('#')[0];
-    const p=new URLSearchParams(qStr);
-    const code=p.get('code');
-    if(code){
-      const verifier=(document.cookie.match(/cv=([^;]+)/)||[])[1]||localStorage.getItem('cv')||'';
-      try{
-        const r=await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=pkce`,{
-          method:'POST',
-          headers:{'apikey':SUPABASE_KEY,'Content-Type':'application/json'},
-          body:JSON.stringify({auth_code:code,code_verifier:verifier})
-        });
-        const d=await r.json();
-        if(d.access_token){
-          sbToken=d.access_token;
-          localStorage.setItem('sb_token',sbToken);
-          localStorage.removeItem('cv');
-          document.cookie='cv=;path=/;max-age=0';
-        }
-      }catch(e){}
+    
+    // 에러 처리
+    const err=p.get('error');
+    if(err){
+      console.error('Auth error:',err,p.get('msg'));
       history.replaceState(null,'',location.pathname);
     }
   }
 
-  // localStorage에서 토큰 복원
   if(!sbToken) sbToken=localStorage.getItem('sb_token');
   if(!sbToken) return false;
 
