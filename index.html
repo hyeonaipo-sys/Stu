@@ -964,12 +964,9 @@ async function sbGetSession(){
     if(token){sbToken=token;localStorage.setItem('sb_token',sbToken);}
     history.replaceState(null,'',location.pathname);
   } else if(search.includes('code=')){
-    // PKCE code exchange
     const params=new URLSearchParams(search.slice(1));
     const code=params.get('code');
     const verifier=localStorage.getItem('pkce_verifier')||'';
-    console.log('CODE:', code);
-    console.log('VERIFIER:', verifier);
     try{
       const r=await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=pkce`,{
         method:'POST',
@@ -977,13 +974,19 @@ async function sbGetSession(){
         body:JSON.stringify({auth_code:code,code_verifier:verifier})
       });
       const d=await r.json();
-      console.log('TOKEN RESPONSE:', JSON.stringify(d));
       if(d.access_token){
         sbToken=d.access_token;
         localStorage.setItem('sb_token',sbToken);
         localStorage.removeItem('pkce_verifier');
+      } else {
+        // 화면에 에러 표시
+        document.body.innerHTML='<div style="padding:40px;font-size:14px;background:white;word-break:break-all;">PKCE ERROR:<br>code: '+code+'<br><br>verifier: '+verifier+'<br><br>response: '+JSON.stringify(d)+'</div>';
+        return false;
       }
-    }catch(e){console.error('PKCE ERROR:',e);}
+    }catch(e){
+      document.body.innerHTML='<div style="padding:40px;font-size:14px;">FETCH ERROR: '+e.message+'</div>';
+      return false;
+    }
     history.replaceState(null,'',location.pathname);
   } else {
     sbToken=localStorage.getItem('sb_token');
