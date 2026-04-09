@@ -968,6 +968,8 @@ async function sbGetSession(){
     const params=new URLSearchParams(search.slice(1));
     const code=params.get('code');
     const verifier=localStorage.getItem('pkce_verifier')||'';
+    console.log('CODE:', code);
+    console.log('VERIFIER:', verifier);
     try{
       const r=await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=pkce`,{
         method:'POST',
@@ -975,12 +977,13 @@ async function sbGetSession(){
         body:JSON.stringify({auth_code:code,code_verifier:verifier})
       });
       const d=await r.json();
+      console.log('TOKEN RESPONSE:', JSON.stringify(d));
       if(d.access_token){
         sbToken=d.access_token;
         localStorage.setItem('sb_token',sbToken);
         localStorage.removeItem('pkce_verifier');
       }
-    }catch(e){console.error(e);}
+    }catch(e){console.error('PKCE ERROR:',e);}
     history.replaceState(null,'',location.pathname);
   } else {
     sbToken=localStorage.getItem('sb_token');
